@@ -1,0 +1,13 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createJrnl = void 0;
+const toolkit_1 = require("@reduxjs/toolkit");
+const axios_1 = __importDefault(require("axios"));
+exports.createJrnl = (0, toolkit_1.createAsyncThunk)('jrnl/createJrnl', async (payload, thunkAPI) => {
+    const { title, theme } = payload;
+    const response = await axios_1.default.post('/jrnl', { title });
+    return response.data;
+});
