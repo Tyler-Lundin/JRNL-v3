@@ -6,6 +6,8 @@ import loginUser from './features/user/api/loginUser'
 import registerUser from './features/user/api/registerUser'
 import type { RootState, AppDispatch } from './store'
 import getJournals from './features/journal/api/getJournals'
+import { useSwipeable } from 'react-swipeable'
+import { startEditor } from './features/editor/editorSlice'
 
 export const DEBUG_MODE = true // set to true to see console logs
 
@@ -21,66 +23,6 @@ export const useAppPackage = () => {
   const navTo = useNavigate()
   const dispatch = useAppDispatch()
   useEffect(() => (loggedIn ? navTo('/') : navTo('/login')), [loggedIn])
-}
-
-/**
- * Editor.tsx PACKAGE
- */
-export const useEditorPackage = () => {
-  const dispatch = useAppDispatch()
-  const { activeJournal } = useAppSelector((state) => state.journal)
-  const [pageIndex, setPageIndex] = useState(0)
-  const [page, setPage] = useState({
-    title: '',
-    content: '',
-  })
-
-  const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
-    setPage({ ...page, title: e.target.value })
-    dispatch(setActiveJournal({ ...activeJournal, title: e.target.value }))
-  }
-  const handleChangeContent = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    console.log('handleChangeContent', e.target.value)
-    setPage({ ...page, content: e.target.value })
-    dispatch(setActiveJournal({ ...activeJournal, content: e.target.value }))
-  }
-  const handleSave = () => {
-    console.log('save')
-  }
-  const handleUndo = () => {
-    console.log('undo')
-  }
-  const handleRedo = () => {
-    console.log('redo')
-  }
-  const handleDelete = () => {
-    console.log('delete')
-  }
-  const handleNextPage = () => {
-    console.log('next page')
-  }
-  const handlePrevPage = () => {
-    console.log('prev page')
-  }
-
-  useEffect(() => {
-    if (activeJournal) {
-      dispatch(setActiveJournal({ ...activeJournal, pages: [...activeJournal.pages, page] }))
-    }
-  }, [page])
-
-  return {
-    page,
-    pageIndex,
-    handleChangeTitle,
-    handleChangeContent,
-    handleSave,
-    handleUndo,
-    handleRedo,
-    handleDelete,
-    handleNextPage,
-    handlePrevPage,
-  }
 }
 
 /**
@@ -181,10 +123,13 @@ export const useJournalsPackage = () => {
   const renderJournals = () => console.log('renderJournals')
 
   useEffect(() => {
-    if (loggedIn) {
-      dispatch(getJournals())
-    }
+    if (loggedIn) dispatch(getJournals())
   }, [loggedIn])
+
+  useEffect(() => {
+    if (journals.length === 0) setCreateOpen(true)
+  }, [])
+
   return {
     journals,
     promptOpen,

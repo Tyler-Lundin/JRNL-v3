@@ -47,7 +47,8 @@ const JOURNALS = styled.div`
   overflow-y: auto;
   place-items: center;
   grid-gap: 100px;
-  padding: 100px;
+  padding: 30px;
+  padding-top: 60px;
   box-sizing: border-box;
   position: absolute;
   top: 0;

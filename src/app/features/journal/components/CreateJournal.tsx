@@ -70,7 +70,6 @@ const CREATE_JOURNAL = styled.form<{ $bg: string }>`
   max-width: calc(80vh * 0.7);
   aspect-ratio: 8.25 / 11.75;
   border-radius: 6px;
-  overflow: hidden;
   position: relative;
   text-align: center;
   box-sizing: border-box;
@@ -83,6 +82,7 @@ const BINDING = styled.div`
   width: 40px;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 3px 0 0 3px;
 `
 
 const COVER = styled.div`
@@ -91,6 +91,7 @@ const COVER = styled.div`
   background-color: rgba(0, 0, 0, 0.2);
   padding-top: 20%;
   box-sizing: border-box;
+  border-radius: 0 6px 6px 0;
 `
 
 const TITLE_INPUT = styled.input`

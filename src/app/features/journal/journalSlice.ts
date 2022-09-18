@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import axios from 'axios'
 import { TTheme } from '../../common/types/theme.type'
 import createJournal from './api/createJournal'
 import getJournals from './api/getJournals'
@@ -49,6 +50,13 @@ const journalSlice = createSlice({
         state.activeJournal = activeJournal
       }
     },
+    updateActiveJournal(state, action) {
+      const journalIndex = state.journals.findIndex((journal) => journal._id === journal._id)
+      if (journalIndex !== -1) {
+        state.journals[journalIndex] = state.activeJournal
+        state.activeJournal = action.payload
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -74,6 +82,6 @@ const journalSlice = createSlice({
   },
 })
 
-export const { setActiveJournal } = journalSlice.actions
+export const { setActiveJournal, updateActiveJournal } = journalSlice.actions
 
 export default journalSlice.reducer

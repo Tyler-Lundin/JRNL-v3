@@ -6,12 +6,11 @@ import { useAppDispatch, useAppSelector } from '../../hooks'
 import { useEffect, useState } from 'react'
 
 const Nav = () => {
-  const [navFocused, setNavFocused] = useState(false)
   const { navOpen, navLinks } = useAppSelector((state) => state.nav)
   const { loggedIn } = useAppSelector((state) => state.user)
   const dispatch = useAppDispatch()
   const renderNavLinks = navLinks.map((l, i) => (
-    <NAV_LINK onClick={() => dispatch(openNav())} key={i} to={l.path} children={l.name} />
+    <NAV_LINK onClick={() => dispatch(closeNav())} key={i} to={l.path} children={l.name} />
   ))
   useEffect(() => {
     if (loggedIn) {
@@ -19,30 +18,14 @@ const Nav = () => {
     }
   }, [loggedIn])
 
-  const handleFocus = () => {
-    if (!navOpen) {
-      setNavFocused(true)
-      dispatch(openNav())
-    }
-  }
-  const handleBlur = () => {
-    if (navFocused) {
-      setNavFocused(false)
-      dispatch(closeNav())
-    }
-  }
   return (
     <NAV_CONTAINER>
       {navOpen && <BACKDROP onClick={() => dispatch(closeNav())} />}
       <NAV_TOGGLE
-        aria-details='Toggle the navigation menu open and closed'
-        aria-label='Navigation Menu Toggle'
         onClick={() => dispatch(navOpen ? closeNav() : openNav())}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
         children={navOpen ? <AiOutlineClose size='90%' /> : <AiOutlineMenu size='80%' />}
       />
-      <NAV onFocus={handleFocus} open={navOpen} children={renderNavLinks} />
+      <NAV open={navOpen} children={renderNavLinks} />
     </NAV_CONTAINER>
   )
 }
@@ -55,9 +38,9 @@ const NAV_CONTAINER = styled.div`
 `
 
 const NAV = styled.nav<{ open: boolean }>`
-  width: 300px;
+  width: 100%;
   height: 100vh;
-  background-color: rgb(35, 35, 35);
+  background-color: rgb(48, 48, 48);
   position: absolute;
   transition: 250ms;
   right: -100%;
@@ -88,9 +71,6 @@ const NAV_LINK = styled(Link)`
   :hover {
     background-color: rgba(0, 0, 0, 0.1);
   }
-  :focus {
-    outline: 2px solid gold;
-  }
 `
 
 const NAV_TOGGLE = styled.button`
@@ -108,9 +88,7 @@ const NAV_TOGGLE = styled.button`
   place-items: center;
   transition: 250ms;
   outline: 2px solid transparent;
-  :focus {
-    outline: 2px solid gold;
-  }
+
   :hover {
     background-color: white;
   }
@@ -136,10 +114,9 @@ const BACKDROP = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 1;
-  backdrop-filter: blur(2px);
   animation: ${fadeIn} 250ms ease-in-out;
 `

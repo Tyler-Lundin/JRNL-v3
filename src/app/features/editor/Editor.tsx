@@ -1,28 +1,18 @@
 import styled from 'styled-components'
-import { useEditorPackage } from '../hooks'
+// import { useEditorPackage } from '../../hooks'
+import useEditor from './useEditor'
 
 const Editor = () => {
-  const {
-    page,
-    pageIndex,
-    handleChangeTitle,
-    handleChangeContent,
-    handleSave,
-    handleUndo,
-    handleRedo,
-    handleDelete,
-    handleNextPage,
-    handlePrevPage,
-  } = useEditorPackage()
+  const { swiping, handleTitle, handleContent, journal, pageIndex } = useEditor()
 
   return (
-    <EDITOR>
+    <EDITOR {...swiping}>
       <HEADER>
-        <TITLE value={page.title} onChange={handleChangeTitle} />
+        <TITLE value={journal.pages[pageIndex]?.title || ''} onChange={handleTitle} />
         <PAGE_INDEX>{pageIndex + 1}/99</PAGE_INDEX>
       </HEADER>
-      <BODY onTouchStart={handleNextPage}>
-        <TEXTAREA value={page.content} onChange={handleChangeContent} />
+      <BODY>
+        <TEXTAREA value={journal.pages[pageIndex]?.content || ''} onChange={handleContent} />
       </BODY>
     </EDITOR>
   )
@@ -39,6 +29,8 @@ const EDITOR = styled.div`
 const HEADER = styled.div`
   height: 50px;
   border-bottom: 1px solid silver;
+  padding: 0 10px;
+  box-sizing: border-box;
 `
 
 const TITLE = styled.input`
@@ -49,7 +41,7 @@ const TITLE = styled.input`
   border-radius: 0;
   font-family: 'Roboto', sans-serif;
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: white;
   :focus {
     outline: none;
@@ -58,12 +50,12 @@ const TITLE = styled.input`
 
 const BODY = styled.div`
   height: calc(100% - 50px);
-  padding: 5px;
+  padding: 10px;
   box-sizing: border-box;
 `
 
 const TEXTAREA = styled.textarea`
-  min-width: 100vw;
+  min-width: 100%;
   min-height: 100%;
   box-sizing: border-box;
   resize: none;
@@ -83,6 +75,6 @@ const PAGE_INDEX = styled.h5`
   font-family: 'Roboto', sans-serif;
   font-weight: 500;
   background-color: rgb(28, 28, 28);
-  padding: 0 5px;
+  padding: 0 10px;
   color: white;
 `

@@ -8,7 +8,7 @@ import Register from './features/user/Register'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import Home from './screens/Home'
-import Editor from './screens/Editor'
+import Editor from './features/editor/Editor'
 
 const AppRoutes = () =>
   useRoutes([
