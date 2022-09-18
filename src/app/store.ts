@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userSlice from './features/user/userSlice'
-import jrnlSlice from './features/jrnl/jrnlSlice'
+import journalSlice from './features/journal/journalSlice'
 import navSlice from './features/nav/navSlice'
 
 const store = configureStore({
   reducer: {
-    jrnl: jrnlSlice,
+    journal: journalSlice,
     nav: navSlice,
     user: userSlice,
   },

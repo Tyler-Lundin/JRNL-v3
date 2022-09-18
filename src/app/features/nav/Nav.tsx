@@ -1,35 +1,63 @@
 import styled, { css, keyframes } from 'styled-components'
 import { Link } from 'react-router-dom'
-import { toggleNav } from './navSlice'
+import { toggleLinks, openNav, closeNav } from './navSlice'
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
 import { useAppDispatch, useAppSelector } from '../../hooks'
+import { useEffect, useState } from 'react'
 
 const Nav = () => {
+  const [navFocused, setNavFocused] = useState(false)
   const { navOpen, navLinks } = useAppSelector((state) => state.nav)
+  const { loggedIn } = useAppSelector((state) => state.user)
   const dispatch = useAppDispatch()
-
   const renderNavLinks = navLinks.map((l, i) => (
-    <NAV_LINK onClick={() => dispatch(toggleNav())} key={i} to={l.path} children={l.name} />
+    <NAV_LINK onClick={() => dispatch(openNav())} key={i} to={l.path} children={l.name} />
   ))
+  useEffect(() => {
+    if (loggedIn) {
+      dispatch(toggleLinks())
+    }
+  }, [loggedIn])
 
+  const handleFocus = () => {
+    if (!navOpen) {
+      setNavFocused(true)
+      dispatch(openNav())
+    }
+  }
+  const handleBlur = () => {
+    if (navFocused) {
+      setNavFocused(false)
+      dispatch(closeNav())
+    }
+  }
   return (
-    <>
-      {navOpen && <BACKDROP onClick={() => dispatch(toggleNav())} />}
+    <NAV_CONTAINER>
+      {navOpen && <BACKDROP onClick={() => dispatch(closeNav())} />}
       <NAV_TOGGLE
-        onClick={() => dispatch(toggleNav())}
+        aria-details='Toggle the navigation menu open and closed'
+        aria-label='Navigation Menu Toggle'
+        onClick={() => dispatch(navOpen ? closeNav() : openNav())}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         children={navOpen ? <AiOutlineClose size='90%' /> : <AiOutlineMenu size='80%' />}
       />
-      <NAV open={navOpen} children={renderNavLinks} />
-    </>
+      <NAV onFocus={handleFocus} open={navOpen} children={renderNavLinks} />
+    </NAV_CONTAINER>
   )
 }
 
 export default Nav
 
+const NAV_CONTAINER = styled.div`
+  position: relative;
+  z-index: 9999;
+`
+
 const NAV = styled.nav<{ open: boolean }>`
   width: 300px;
   height: 100vh;
-  background-color: skyblue;
+  background-color: rgb(35, 35, 35);
   position: absolute;
   transition: 250ms;
   right: -100%;
@@ -52,29 +80,46 @@ const NAV_LINK = styled(Link)`
   font-weight: bold;
   text-align: center;
   transition: 250ms;
-  color: black;
+  color: white;
   padding: 10px;
   width: 100%;
+  outline: 2px solid transparent;
+  border-radius: 10px;
   :hover {
     background-color: rgba(0, 0, 0, 0.1);
   }
+  :focus {
+    outline: 2px solid gold;
+  }
 `
 
-const NAV_TOGGLE = styled.div`
+const NAV_TOGGLE = styled.button`
   position: absolute;
-  top: 10px;
+  background: none;
+  border: none;
+  top: 4px;
   right: 10px;
   width: 50px;
   height: 50px;
-  background-color: white;
-  border-radius: 20px;
   cursor: pointer;
   z-index: 4;
+  border-radius: 6px;
   display: grid;
   place-items: center;
   transition: 250ms;
+  outline: 2px solid transparent;
+  :focus {
+    outline: 2px solid gold;
+  }
   :hover {
-    box-shadow: 0px 1px 0 1px gray;
+    background-color: white;
+  }
+  svg {
+    color: white;
+    transition: 250ms;
+  }
+  :hover > svg {
+    color: black;
   }
 `
 

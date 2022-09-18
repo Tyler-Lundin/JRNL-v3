@@ -1,33 +1,54 @@
 import styled from 'styled-components'
+import { fadeIn, fadeInFromLeft } from '../../common/keyframes'
 import Logo from '../../common/Logo'
-import useLoginPackage from './useLoginPackage'
+import Spinner from '../../common/Spinner'
+import { useLoginPackage } from '../../hooks'
 
 const Login = () => {
-  const { email, password, submitLogin, navTo, setEmail, setPassword } = useLoginPackage()
+  const { navTo, email, password, loading, error, submitLogin, handleFormChange } =
+    useLoginPackage()
   return (
     <LOGIN>
       <FORM>
-        <LOGO_CONTAINER children={<Logo />} />
-        <INPUT
-          type='text'
-          placeholder='Username'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <INPUT
-          type='password'
-          placeholder='Password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <BUTTON onClick={submitLogin}>Login</BUTTON>
-        <SUBTITLE>or</SUBTITLE>
-        <BUTTON onClick={() => navTo('/register')}>Register</BUTTON>
-        <GITHUB_CONTAINER>
-          <A href='https://github.com/Tyler-Lundin/JRNL-v3' target='_blank'>
-            VIEW ON GITHUB
-          </A>
-        </GITHUB_CONTAINER>
+        {loading ? (
+          <SPINNER_CONTAINER>
+            <Spinner />
+          </SPINNER_CONTAINER>
+        ) : (
+          <>
+            <LOGO_CONTAINER aria-label='logo' children={<Logo />} />
+            <INPUTS aria-label='email and password inputs'>
+              <GROUP>
+                <LABEL htmlFor='email'>EMAIL</LABEL>
+                <INPUT
+                  type='text'
+                  placeholder='Username'
+                  name='email'
+                  value={email}
+                  onChange={handleFormChange}
+                />
+              </GROUP>
+              <GROUP>
+                <LABEL htmlFor='password'>PASSWORD</LABEL>
+                <INPUT
+                  type='password'
+                  placeholder='Password'
+                  name='password'
+                  value={password}
+                  onChange={handleFormChange}
+                />
+              </GROUP>
+            </INPUTS>
+            <BUTTON onClick={submitLogin}>Login</BUTTON>
+            <SUBTITLE>or</SUBTITLE>
+            <BUTTON onClick={() => navTo('/register')}>Register</BUTTON>
+            <GITHUB_CONTAINER>
+              <A href='https://github.com/Tyler-Lundin/JRNL-v3' target='_blank'>
+                VIEW ON GITHUB
+              </A>
+            </GITHUB_CONTAINER>
+          </>
+        )}
       </FORM>
     </LOGIN>
   )
@@ -40,52 +61,96 @@ const LOGIN = styled.div`
   height: 100vh;
   position: absolute;
   z-index: 9999;
-  background-color: rgba(220, 220, 220, 0.8);
+  background-color: rgb(28, 28, 28);
 `
 
+const SPINNER_CONTAINER = styled.div`
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+`
 const FORM = styled.form`
   overflow: hidden;
   width: 500px;
-  height: 500px;
+  height: 700px;
   position: absolute;
   box-sizing: border-box;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
   padding: 20px;
   display: grid;
   align-content: center;
+  animation: ${fadeIn} 1s ease-in-out;
 `
 
+const INPUTS = styled.div`
+  padding: 40px 0;
+  display: grid;
+  grid-gap: 20.5px;
+`
+
+const GROUP = styled.div`
+  position: relative;
+  isolation: isolate;
+`
 const INPUT = styled.input`
   width: 100%;
   height: 40px;
-  border: 1px solid #ccc;
   box-sizing: border-box;
   border-radius: 5px;
   margin-bottom: 10px;
   font-size: 16px;
+  border: none;
+  background: none;
+  background-color: none;
+  color: white;
+  border: 1px solid white;
+  outline: 2px solid transparent;
+  outline-offset: 5px;
+  transition: 250ms;
   &:focus {
-    outline: none;
-    border: 1px solid #000;
+    outline: 2px solid white;
+    background: none;
   }
 `
 
-const BUTTON = styled.button`
-  width: 100%;
-  height: 40px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 0 10px;
+const LABEL = styled.label`
   font-size: 16px;
-  font-family: 'Komet', sans-serif;
+  color: white;
+  font-family: 'Roboto', sans-serif;
   font-weight: 700;
+  background-color: rgb(28, 28, 28);
+  position: relative;
+  z-index: 5;
+  padding: 0 5px;
+  margin-left: 5px;
+`
+
+const BUTTON = styled.button`
+  width: fit-content;
+  border: none;
+  background-color: black;
+  background: none;
+  border-radius: 5px;
+  color: white;
+  margin: auto;
+  padding: 10px;
+  font-size: 2rem;
+  font-family: 'Roboto', sans-serif;
+  transition: 150ms;
+  font-weight: 700;
+  outline: 2px solid transparent;
+  outline-offset: 5px;
   &:focus {
-    outline: none;
-    border: 1px solid #000;
+    outline: 2px solid white;
+  }
+  &:hover {
+    cursor: pointer;
+    color: black;
+    background-color: gold;
   }
 `
 
@@ -99,11 +164,12 @@ const LOGO_CONTAINER = styled.div`
 const SUBTITLE = styled.div`
   width: 100%;
   height: fit-content;
-  font-family: 'Komet', sans-serif;
+  font-family: 'Roboto', sans-serif;
   display: grid;
   place-items: center;
   padding: 10px;
   box-sizing: border-box;
+  color: white;
 `
 
 const GITHUB_CONTAINER = styled.div`
@@ -116,19 +182,18 @@ const GITHUB_CONTAINER = styled.div`
 `
 
 const A = styled.a`
-  font-family: 'Komet', sans-serif;
+  font-family: 'Roboto', sans-serif;
   text-decoration: none;
   padding: 5px;
   border-radius: 5px;
-  border: 1px solid black;
   box-sizing: border-box;
   transition: 250ms;
 
   :visited {
-    color: black;
+    color: gold;
   }
   :hover {
-    background-color: black;
-    color: white;
+    background-color: gold;
+    color: black;
   }
 `
