@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, SyntheticEvent } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const CSS_COLOR_NAMES = [
   'AliceBlue',
@@ -176,7 +176,7 @@ const THEME_SELECTOR = styled.form`
   position: absolute;
   width: 100vw;
   height: fit-content;
-  padding: 10px 0;
+  padding: 30px 0;
   display: flex;
   overflow-x: auto;
   gap: 25px;
@@ -191,7 +191,6 @@ const SMALL_JOURNAL = styled.button<{ $active: boolean; $bg: string }>`
   border-radius: 6px;
   border: none;
   background-color: ${(props) => props.$bg};
-  ${(props) => (props.$bg === 'none' ? 'border: 1px solid #000' : '')};
   position: relative;
   transition: 250ms;
 
@@ -205,5 +204,10 @@ const SMALL_JOURNAL = styled.button<{ $active: boolean; $bg: string }>`
     top: 0;
     border-radius: 6px 0 0 6px;
   }
-  ${(props) => (props.$active ? 'transform: translateY(-15px);' : '')};
+  ${(props) =>
+    props.$active &&
+    css`
+      transform: translateY(-15px);
+      border: 1px solid #000;
+    `};
 `

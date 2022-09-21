@@ -6,6 +6,7 @@ export interface IEditor {
   journal: IJournal
   pageIndex: number
   unsavedChanges: boolean
+  saving: boolean
 }
 
 const initialState: IEditor = {
@@ -23,6 +24,7 @@ const initialState: IEditor = {
   },
   pageIndex: 0,
   unsavedChanges: false,
+  saving: false,
 }
 
 export const editorSlice = createSlice({
@@ -50,9 +52,20 @@ export const editorSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(saveJournal.fulfilled, (state, action) => {
-      state.unsavedChanges = false
-    })
+    builder
+      .addCase(saveJournal.fulfilled, (state, action) => {
+        state.unsavedChanges = false
+        state.saving = false
+      })
+
+      .addCase(saveJournal.pending, (state) => {
+        state.saving = true
+      })
+
+      .addCase(saveJournal.rejected, (state) => {
+        state.saving = false
+        state.unsavedChanges = true
+      })
   },
 })
 

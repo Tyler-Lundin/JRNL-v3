@@ -105,16 +105,12 @@ const INPUT = styled.input`
   font-size: 16px;
   border: none;
   background: none;
-  background-color: none;
-  color: white;
+  background-color: white;
+  color: black;
   border: 1px solid white;
   outline: 2px solid transparent;
   outline-offset: 5px;
   transition: 250ms;
-  &:focus {
-    outline: 2px solid white;
-    background: none;
-  }
 `
 
 const LABEL = styled.label`

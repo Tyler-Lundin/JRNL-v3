@@ -1,9 +1,10 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import { fadeIn, fadeOut } from '../../common/keyframes'
 // import { useEditorPackage } from '../../hooks'
 import useEditor from './useEditor'
 
 const Editor = () => {
-  const { swiping, handleTitle, handleContent, journal, pageIndex } = useEditor()
+  const { swiping, handleTitle, handleContent, journal, pageIndex, saving } = useEditor()
 
   return (
     <EDITOR {...swiping}>
@@ -14,6 +15,10 @@ const Editor = () => {
       <BODY>
         <TEXTAREA value={journal.pages[pageIndex]?.content || ''} onChange={handleContent} />
       </BODY>
+
+      <SAVING $on={saving}>
+        <SAVING_TEXT>saving..</SAVING_TEXT>
+      </SAVING>
     </EDITOR>
   )
 }
@@ -77,4 +82,26 @@ const PAGE_INDEX = styled.h5`
   background-color: rgb(28, 28, 28);
   padding: 0 10px;
   color: white;
+`
+
+const SAVING = styled.div<{ $on: boolean }>`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  animation: ${fadeOut} 4s ease-in-out forwards;
+  ${({ $on }) =>
+    $on &&
+    css`
+      animation: ${fadeIn} 0.5s ease-in-out;
+    `}
+`
+
+const SAVING_TEXT = styled.h3`
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  background-color: rgb(28, 28, 28);
+  padding: 0 10px;
+  color: white;
+  transition: 250ms;
 `
