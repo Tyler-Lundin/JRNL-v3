@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useInView } from 'react-intersection-observer'
 import { useSwipeable } from 'react-swipeable'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import {
@@ -31,16 +32,31 @@ export const useEditor = () => {
     dispatch(setPageContent(e.target.value))
   }
 
-  // useEffect(() => {
-  //   if (unsavedChanges) {
-  //     console.log('unsavedChanges')
-  //     const timer = setTimeout(() => {
-  //       console.log('%csaving...', 'background: #222; color: #bada55')
-  //       dispatch(saveJournal())
-  //     }, 1000)
-  //     return () => clearTimeout(timer)
-  //   }
-  // }, [unsavedChanges])
+  const handleBlur = () => {
+    if (unsavedChanges) {
+      dispatch(saveJournal())
+    }
+  }
+
+  const { ref, inView, entry } = useInView({
+    /* Optional options */
+    threshold: 0,
+  })
+
+  useEffect(() => {
+    if (unsavedChanges) {
+      console.log('unsavedChanges')
+      const timer = setTimeout(() => {
+        console.log('%c saving...', 'background: green; color: black')
+        dispatch(saveJournal())
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [unsavedChanges])
+
+  useEffect(() => {
+    console.log('in view', inView)
+  }, [inView])
 
   useEffect(() => {
     dispatch(startEditor(activeJournal))
@@ -50,9 +66,13 @@ export const useEditor = () => {
     swiping,
     handleTitle,
     handleContent,
+    handleBlur,
     journal,
     pageIndex,
     saving,
+    ref,
+    // inView,
+    // entry,
   }
 }
 

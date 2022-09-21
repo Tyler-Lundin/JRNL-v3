@@ -4,16 +4,30 @@ import { fadeIn, fadeOut } from '../../common/keyframes'
 import useEditor from './useEditor'
 
 const Editor = () => {
-  const { swiping, handleTitle, handleContent, journal, pageIndex, saving } = useEditor()
+  const { swiping, handleTitle, handleContent, handleBlur, journal, pageIndex, saving, ref } =
+    useEditor()
 
   return (
     <EDITOR {...swiping}>
       <HEADER>
-        <TITLE value={journal.pages[pageIndex]?.title || ''} onChange={handleTitle} />
+        <TITLE
+          value={journal.pages[pageIndex]?.title || ''}
+          onBlur={handleBlur}
+          onChange={handleTitle}
+        />
         <PAGE_INDEX>{pageIndex + 1}/99</PAGE_INDEX>
       </HEADER>
       <BODY>
-        <TEXTAREA value={journal.pages[pageIndex]?.content || ''} onChange={handleContent} />
+        {pageIndex > 0 && (
+          <TEXTAREA_PREV value={journal.pages[pageIndex - 1]?.content || ''} readOnly />
+        )}
+        <TEXTAREA_VISIBLE
+          onBlur={handleBlur}
+          value={journal.pages[pageIndex]?.content || ''}
+          onChange={handleContent}
+          ref={ref}
+        />
+        <TEXTAREA_VISIBLE value={journal.pages[pageIndex + 1]?.content || ''} readOnly />
       </BODY>
 
       <SAVING $on={saving}>
@@ -54,13 +68,44 @@ const TITLE = styled.input`
 `
 
 const BODY = styled.div`
-  height: calc(100% - 50px);
+  height: calc(100vh - 50px);
   padding: 10px;
-  box-sizing: border-box;
+  width: 100vw;
+  overflow-x: scroll;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  scroll-snap-type: x mandatory;
+  textarea {
+    scroll-snap-align: start;
+  }
 `
 
-const TEXTAREA = styled.textarea`
-  min-width: 100%;
+const TEXTAREA_VISIBLE = styled.textarea`
+  min-width: 100vw;
+  min-height: 100%;
+  box-sizing: border-box;
+  resize: none;
+  background: none;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  color: white;
+`
+const TEXTAREA_NEXT = styled.textarea`
+  min-width: 100vw;
+  min-height: 100%;
+  box-sizing: border-box;
+  resize: none;
+  background: none;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  color: white;
+`
+
+const TEXTAREA_PREV = styled.textarea`
+  min-width: 100vw;
   min-height: 100%;
   box-sizing: border-box;
   resize: none;
